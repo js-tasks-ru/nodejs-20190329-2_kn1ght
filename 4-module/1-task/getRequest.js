@@ -1,11 +1,7 @@
 const fs = require('fs');
-const mime = require('mime');
 
 const getRequest = (pathToFile, res) => {
   const rstream = fs.createReadStream(pathToFile);
-
-  const contentType = mime.getType(pathToFile);
-  res.setHeader('Content-Type', contentType + ' ;encoding: utf-8');
 
   rstream.pipe(res);
 
