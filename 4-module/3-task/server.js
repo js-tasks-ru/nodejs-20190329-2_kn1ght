@@ -12,7 +12,6 @@ server.on('request', (req, res) => {
   try {
     decodedUrl = decodeURIComponent(req.url);
   } catch (e) {
-    console.error(e);
     res.statusCode = 400;
     res.end('Bad request');
     return;

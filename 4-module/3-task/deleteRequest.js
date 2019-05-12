@@ -3,7 +3,6 @@ const fs = require('fs');
 const deleteRequest = (pathToFile, res) => {
   fs.unlink(pathToFile, e => {
     if (e) {
-      console.error(e);
       res.statusCode = 404;
       res.end('File not found');
     } else {

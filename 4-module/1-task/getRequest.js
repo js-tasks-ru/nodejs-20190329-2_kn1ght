@@ -6,7 +6,6 @@ const getRequest = (pathToFile, res) => {
   rstream.pipe(res);
 
   rstream.on('error', (e) => {
-    console.error(e);
     res.statusCode = 404;
     res.end('File not found');
   });
