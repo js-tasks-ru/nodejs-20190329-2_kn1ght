@@ -15,48 +15,38 @@ const postRequest = (filepath, req, res) => {
   }
 
   req
-      .pipe(limitSizeStream)
-      .on('error', (e) => {
-        // console.error(e);
+    .pipe(limitSizeStream)
+    .on('error', (e) => {
+      if (e instanceof LimitExceededError) {
+        res.statusCode = 413;
+        res.end('Payload Too Large');
+      } else {
+        res.statusCode = 400;
+        res.end('Bad Request');
+      }
 
-        if (e instanceof LimitExceededError) {
-          res.statusCode = 413;
-          res.end('Payload Too Large');
-        } else {
-          res.statusCode = 400;
-          res.end('Bad Request');
-        }
+      fs.unlink(filepath, (e) => {});
+      wstream.destroy();
+    })
+    .pipe(wstream)
+    .on('error', (e) => {
+      if (e.code === 'EEXIST') {
+        res.statusCode = 409;
+        res.end('File Already Exists');
+        return;
+      }
 
-        fs.unlink(filepath, (e) => {
-          if (e) console.error(e);
-        });
-        wstream.destroy();
-      })
-      .pipe(wstream)
-      .on('finish', () => {
-        res.statusCode = 201;
-        res.end('File Created');
-      })
-      .on('error', (e) => {
-        // console.error(e);
-
-        if (e.code === 'EEXIST') {
-          res.statusCode = 409;
-          res.end('File Already Exists');
-          return;
-        }
-
-        res.statusCode = 500;
-        res.end('Internal Server Error');
-      });
+      res.statusCode = 500;
+      res.end('Internal Server Error');
+    })
+    .on('close', () => {
+      res.statusCode = 201;
+      res.end('File Created');
+    });
 
   res.on('close', () => {
     if (res.finished) return;
     fs.unlink(filepath, (err) => {});
-  });
-
-  req.on('error', (e) => {
-    // console.log(e);
   });
 };
 

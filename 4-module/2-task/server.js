@@ -7,18 +7,7 @@ const postRequest = require('./postRequest');
 const server = new http.Server();
 
 server.on('request', (req, res) => {
-  let decodedUrl;
-
-  try {
-    decodedUrl = decodeURIComponent(req.url);
-  } catch (e) {
-    console.error(e);
-    res.statusCode = 400;
-    res.end('Bad request');
-    return;
-  }
-
-  const pathname = url.parse(decodedUrl).pathname.slice(1);
+  const pathname = url.parse(req.url).pathname.slice(1);
 
   if (checkIfNestedFolder(pathname)) {
     res.statusCode = 400;
