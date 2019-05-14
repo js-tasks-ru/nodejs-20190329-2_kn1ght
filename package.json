@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Node.JS Course Materials",
   "scripts": {
-    "test": "set NODE_ENV=test && mocha --reporter=reporter.js *module/*task/**/*.test.js",
-    "test:local": "set NODE_ENV=test && node local.js",
+    "test": "NODE_ENV=test mocha --reporter=reporter.js *module/*task/**/*.test.js",
+    "test:local": "NODE_ENV=test node local.js",
     "lint": "eslint ."
   },
   "keywords": [],
